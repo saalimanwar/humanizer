@@ -1,7 +1,1 @@
-{
-  "functions": {
-    "api/humanize.js": {
-      "runtime": "edge"
-    }
-  }
-}
+{}
