@@ -3,258 +3,421 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Humanizer — Remove the robot</title>
+<title>Humanizer — Remove the Robot</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400&display=swap" rel="stylesheet">
 <style>
+  :root {
+    --bg: #0f0e0c;
+    --surface: #1a1814;
+    --surface2: #221f1a;
+    --border: #2e2a24;
+    --border2: #3d3830;
+    --accent: #e8602a;
+    --accent-dim: #c04e20;
+    --accent-glow: rgba(232, 96, 42, 0.15);
+    --green: #4caf7d;
+    --green-dim: rgba(76, 175, 125, 0.12);
+    --text: #f0ece4;
+    --text-muted: #7a7368;
+    --text-mid: #b5ae a4;
+    --cream: #f0ece4;
+  }
+
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: 'Georgia', serif;
-    background: #f5f2ec;
-    color: #1a1a1a;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
     min-height: 100vh;
-    padding: 32px 16px 60px;
+    padding: 48px 20px 80px;
+    position: relative;
+    overflow-x: hidden;
   }
 
-  .container { max-width: 900px; margin: 0 auto; }
+  /* Subtle grain texture */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.4;
+  }
 
-  header { margin-bottom: 36px; text-align: center; }
+  .container {
+    max-width: 980px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ── Header ── */
+  header {
+    text-align: center;
+    margin-bottom: 52px;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .logo-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+
+  .logo-icon {
+    width: 42px;
+    height: 42px;
+    background: var(--accent);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    box-shadow: 0 0 24px var(--accent-glow);
+  }
 
   header h1 {
-    font-size: 2.4rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
     font-weight: 700;
-    letter-spacing: -0.03em;
-    color: #111;
+    letter-spacing: -0.02em;
+    color: var(--cream);
+    line-height: 1;
   }
 
-  header h1 span { color: #c0392b; }
-
-  header p {
-    margin-top: 8px;
-    font-size: 1rem;
-    color: #666;
+  header h1 em {
     font-style: italic;
+    color: var(--accent);
+    font-weight: 400;
+  }
+
+  .tagline {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 300;
+    margin-top: 10px;
+    letter-spacing: 0.01em;
+  }
+
+  .badges {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    margin-top: 18px;
+    flex-wrap: wrap;
   }
 
   .badge {
-    display: inline-block;
-    margin-top: 10px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
     padding: 4px 12px;
-    background: #eafaf1;
-    color: #27ae60;
-    border: 1px solid #a9dfbf;
     border-radius: 20px;
-    font-size: 0.75rem;
-    font-family: monospace;
+    font-size: 0.72rem;
+    font-family: 'DM Mono', monospace;
     letter-spacing: 0.04em;
+    border: 1px solid var(--border2);
+    color: var(--text-muted);
+    background: var(--surface);
   }
 
+  .badge.green {
+    border-color: rgba(76, 175, 125, 0.3);
+    color: var(--green);
+    background: var(--green-dim);
+  }
+
+  .badge-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+  }
+
+  /* ── Sample bar ── */
   .sample-bar {
     display: flex;
     gap: 8px;
     flex-wrap: wrap;
-    margin-bottom: 20px;
     justify-content: center;
+    margin-bottom: 28px;
+    animation: fadeUp 0.7s 0.1s ease both;
+  }
+
+  .sample-bar span {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    display: flex;
+    align-items: center;
+    margin-right: 4px;
+    font-family: 'DM Mono', monospace;
   }
 
   .sample-btn {
-    padding: 6px 14px;
-    background: #fff;
-    border: 1.5px solid #ddd;
-    border-radius: 20px;
-    font-size: 0.82rem;
-    font-family: inherit;
+    padding: 7px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border2);
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 400;
     cursor: pointer;
-    color: #666;
-    transition: border-color 0.15s, color 0.15s;
+    color: var(--text-muted);
+    transition: all 0.2s;
+    letter-spacing: 0.01em;
   }
 
-  .sample-btn:hover { border-color: #c0392b; color: #c0392b; }
+  .sample-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
 
+  /* ── Panels ── */
   .panels {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 20px;
-    margin-bottom: 20px;
+    gap: 16px;
+    margin-bottom: 16px;
+    animation: fadeUp 0.7s 0.15s ease both;
   }
 
-  @media (max-width: 640px) {
+  @media (max-width: 660px) {
     .panels { grid-template-columns: 1fr; }
-    header h1 { font-size: 1.8rem; }
+    header h1 { font-size: 2.2rem; }
   }
 
-  .panel { display: flex; flex-direction: column; }
+  .panel { display: flex; flex-direction: column; gap: 10px; }
 
   .panel-label {
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #999;
-    margin-bottom: 8px;
     display: flex;
     align-items: center;
     gap: 8px;
+    font-size: 0.68rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
   }
 
   .panel-label .dot {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     border-radius: 50%;
-    background: #c0392b;
-    flex-shrink: 0;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
   }
 
-  .panel-label .dot.green { background: #27ae60; }
+  .panel-label .dot.green {
+    background: var(--green);
+    box-shadow: 0 0 8px var(--green);
+  }
+
+  .panel-label .dot.green.pulse {
+    animation: pulse 1.5s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
 
   textarea {
     flex: 1;
-    min-height: 300px;
-    padding: 18px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-    font-family: 'Georgia', serif;
-    font-size: 0.97rem;
-    line-height: 1.65;
-    color: #1a1a1a;
+    min-height: 320px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text);
     resize: vertical;
     outline: none;
-    transition: border-color 0.2s;
+    transition: border-color 0.2s, box-shadow 0.2s;
   }
 
-  textarea:focus { border-color: #c0392b; }
+  textarea::placeholder { color: var(--text-muted); opacity: 0.7; }
+
+  textarea:focus {
+    border-color: var(--accent-dim);
+    box-shadow: 0 0 0 3px var(--accent-glow);
+  }
 
   .output-box {
     flex: 1;
-    min-height: 300px;
-    padding: 18px;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    background: #fff;
-    font-family: 'Georgia', serif;
-    font-size: 0.97rem;
-    line-height: 1.65;
-    color: #1a1a1a;
+    min-height: 320px;
+    padding: 20px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: var(--surface);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.93rem;
+    font-weight: 300;
+    line-height: 1.75;
+    color: var(--text);
     white-space: pre-wrap;
     word-break: break-word;
-    position: relative;
     overflow-y: auto;
+    transition: border-color 0.3s, box-shadow 0.3s;
   }
 
-  .output-box.streaming { border-color: #27ae60; }
+  .output-box.streaming {
+    border-color: var(--green);
+    box-shadow: 0 0 0 3px var(--green-dim);
+  }
 
   .placeholder-text {
-    color: #bbb;
+    color: var(--text-muted);
     font-style: italic;
+    opacity: 0.6;
     pointer-events: none;
     user-select: none;
   }
 
-  .changes-section {
-    margin-top: 20px;
-    background: #fff;
-    border: 1.5px solid #ddd;
-    border-radius: 8px;
-    overflow: hidden;
-    display: none;
-  }
-
-  .changes-section.visible { display: block; }
-
-  .changes-header {
-    padding: 12px 18px;
-    background: #fafafa;
-    border-bottom: 1px solid #eee;
-    font-size: 0.72rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: #999;
-    cursor: pointer;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    user-select: none;
-  }
-
-  .changes-header:hover { background: #f5f5f5; }
-
-  .changes-body {
-    padding: 16px 18px;
-    font-size: 0.9rem;
-    line-height: 1.6;
-    color: #444;
-    display: none;
-  }
-
-  .changes-body.open { display: block; }
-  .changes-body ul { padding-left: 18px; }
-  .changes-body li { margin-bottom: 4px; }
-
+  /* ── Bottom bar ── */
   .bottom-bar {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
+    animation: fadeUp 0.7s 0.2s ease both;
   }
 
   .btn-humanize {
-    padding: 13px 32px;
-    background: #c0392b;
+    padding: 12px 28px;
+    background: var(--accent);
     color: #fff;
     border: none;
-    border-radius: 6px;
-    font-size: 1rem;
-    font-weight: 600;
-    font-family: inherit;
+    border-radius: 8px;
+    font-size: 0.92rem;
+    font-weight: 500;
+    font-family: 'DM Sans', sans-serif;
     cursor: pointer;
-    letter-spacing: -0.01em;
-    transition: background 0.15s, transform 0.1s;
+    letter-spacing: 0.01em;
+    transition: background 0.15s, transform 0.1s, box-shadow 0.2s;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    box-shadow: 0 4px 20px rgba(232, 96, 42, 0.3);
   }
 
-  .btn-humanize:hover:not(:disabled) { background: #a93226; }
-  .btn-humanize:active:not(:disabled) { transform: scale(0.98); }
-  .btn-humanize:disabled { background: #e0a09a; cursor: not-allowed; }
+  .btn-humanize:hover:not(:disabled) {
+    background: #f06d35;
+    box-shadow: 0 4px 28px rgba(232, 96, 42, 0.5);
+  }
 
-  .btn-clear {
-    padding: 13px 20px;
+  .btn-humanize:active:not(:disabled) { transform: scale(0.97); }
+
+  .btn-humanize:disabled {
+    background: #3d2e24;
+    color: #6b5548;
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .btn-secondary {
+    padding: 12px 18px;
     background: transparent;
-    color: #999;
-    border: 1.5px solid #ddd;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-family: inherit;
+    color: var(--text-muted);
+    border: 1px solid var(--border2);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
     cursor: pointer;
-    transition: color 0.15s, border-color 0.15s;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
   }
 
-  .btn-clear:hover { color: #555; border-color: #aaa; }
+  .btn-secondary:hover {
+    color: var(--text);
+    border-color: var(--text-muted);
+    background: var(--surface2);
+  }
 
   .btn-copy {
-    padding: 13px 20px;
+    padding: 12px 18px;
     background: transparent;
-    color: #27ae60;
-    border: 1.5px solid #27ae60;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-family: inherit;
+    color: var(--green);
+    border: 1px solid rgba(76, 175, 125, 0.4);
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-family: 'DM Sans', sans-serif;
     cursor: pointer;
-    transition: background 0.15s;
+    transition: background 0.15s, border-color 0.15s;
     margin-left: auto;
+    display: none;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .btn-copy:hover {
+    background: var(--green-dim);
+    border-color: var(--green);
+  }
+
+  .status-msg {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    font-style: italic;
+    font-family: 'DM Mono', monospace;
+  }
+
+  .status-msg.error { color: var(--accent); font-style: normal; }
+
+  /* ── Changes section ── */
+  .changes-section {
+    margin-top: 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .changes-section.visible { display: block; }
+
+  .changes-header {
+    padding: 13px 20px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    font-size: 0.68rem;
+    font-family: 'DM Mono', monospace;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    user-select: none;
+    transition: background 0.15s;
+  }
+
+  .changes-header:hover { background: var(--border); }
+
+  .changes-body {
+    padding: 18px 20px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: #a09890;
     display: none;
   }
 
-  .btn-copy:hover { background: #eafaf1; }
+  .changes-body.open { display: block; }
+  .changes-body ul { padding-left: 16px; }
+  .changes-body li { margin-bottom: 5px; }
 
-  .status-msg {
-    font-size: 0.88rem;
-    color: #999;
-    font-style: italic;
-  }
-
-  .status-msg.error { color: #c0392b; font-style: normal; }
-
+  /* ── Cursor blink ── */
   @keyframes blink {
     0%, 100% { opacity: 1; }
     50% { opacity: 0; }
@@ -263,32 +426,85 @@
   .cursor {
     display: inline-block;
     width: 2px;
-    height: 1.1em;
-    background: #27ae60;
+    height: 1em;
+    background: var(--green);
     vertical-align: text-bottom;
-    animation: blink 0.8s infinite;
-    margin-left: 1px;
+    animation: blink 0.75s infinite;
+    margin-left: 2px;
+    border-radius: 1px;
   }
 
+  /* ── Divider ── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--border2), transparent);
+    margin: 40px 0 24px;
+  }
+
+  /* ── Footer ── */
   footer {
-    margin-top: 48px;
     text-align: center;
-    font-size: 0.8rem;
-    color: #bbb;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-family: 'DM Mono', monospace;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    flex-wrap: wrap;
   }
 
-  footer a { color: #bbb; text-decoration: underline; }
+  footer a {
+    color: var(--text-muted);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.15s;
+  }
+
+  footer a:hover { color: var(--accent); }
+
+  .footer-sep {
+    color: var(--border2);
+  }
+
+  /* ── Animations ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── Word counter ── */
+  .word-count {
+    font-size: 0.7rem;
+    font-family: 'DM Mono', monospace;
+    color: var(--text-muted);
+    text-align: right;
+    margin-top: 6px;
+    opacity: 0.7;
+  }
 </style>
 </head>
 <body>
 <div class="container">
+
   <header>
-    <h1>Human<span>izer</span></h1>
-    <p>Paste AI-generated text. Get writing that sounds like a person wrote it.</p>
-    <span class="badge">✦ Free &amp; Open Source</span>
+    <div class="logo-wrap">
+      <div class="logo-icon">✦</div>
+      <h1>Human<em>izer</em></h1>
+    </div>
+    <p class="tagline">Paste AI-generated text. Get writing that sounds like a person wrote it.</p>
+    <div class="badges">
+      <span class="badge green"><span class="badge-dot"></span>Free Forever</span>
+      <span class="badge"><span class="badge-dot"></span>Open Source</span>
+      <span class="badge"><span class="badge-dot"></span>Powered by Llama 3.3</span>
+      <span class="badge"><span class="badge-dot"></span>No Login Required</span>
+    </div>
   </header>
 
   <div class="sample-bar">
+    <span>Try →</span>
     <button class="sample-btn" onclick="loadSample('email')">Corporate email</button>
     <button class="sample-btn" onclick="loadSample('essay')">Essay intro</button>
     <button class="sample-btn" onclick="loadSample('bio')">LinkedIn bio</button>
@@ -297,35 +513,62 @@
 
   <div class="panels">
     <div class="panel">
-      <div class="panel-label"><span class="dot"></span> AI slop goes in</div>
-      <textarea id="inputText" placeholder="Paste your AI-generated text here…&#10;&#10;Tip: the more robotic, the more dramatic the transformation."></textarea>
+      <div class="panel-label">
+        <span class="dot"></span>
+        AI slop goes in
+      </div>
+      <textarea id="inputText"
+        placeholder="Paste your AI-generated text here…&#10;&#10;The more robotic, the more dramatic the transformation."
+        oninput="updateWordCount()">
+      </textarea>
+      <div class="word-count" id="wordCount">0 words</div>
     </div>
     <div class="panel">
-      <div class="panel-label"><span class="dot green"></span> Human writing comes out</div>
-      <div class="output-box" id="outputBox">
-        <span class="placeholder-text">Your humanized text will appear here…</span>
+      <div class="panel-label">
+        <span class="dot green" id="outputDot"></span>
+        Human writing comes out
       </div>
+      <div class="output-box" id="outputBox">
+        <span class="placeholder-text">Your humanized text will appear here, streaming in real time…</span>
+      </div>
+      <div class="word-count" id="outputWordCount"></div>
     </div>
   </div>
 
   <div class="bottom-bar">
-    <button class="btn-humanize" id="humanizeBtn" onclick="humanize()">Humanize →</button>
-    <button class="btn-clear" onclick="clearAll()">Clear</button>
+    <button class="btn-humanize" id="humanizeBtn" onclick="humanize()">
+      <span>✦</span> Humanize
+    </button>
+    <button class="btn-secondary" onclick="clearAll()">Clear</button>
     <span class="status-msg" id="statusMsg"></span>
-    <button class="btn-copy" id="copyBtn" onclick="copyOutput()">Copy result</button>
+    <button class="btn-copy" id="copyBtn" onclick="copyOutput()">
+      ⎘ Copy result
+    </button>
   </div>
 
   <div class="changes-section" id="changesSection">
     <div class="changes-header" onclick="toggleChanges()">
-      <span>What changed</span>
+      <span>✦ What changed</span>
       <span id="chevron">▼</span>
     </div>
     <div class="changes-body" id="changesBody"></div>
   </div>
 
+  <div class="divider"></div>
+
   <footer>
-    Open source · <a href="https://github.com/YOUR_USERNAME/humanizer" target="_blank">View on GitHub</a> · Powered by Gemini 2.0 Flash (free)
+    <a href="https://github.com/saalimanwar/humanizer" target="_blank" rel="noopener">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+        <path d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+      </svg>
+      View on GitHub
+    </a>
+    <span class="footer-sep">·</span>
+    <span>Open Source · MIT License</span>
+    <span class="footer-sep">·</span>
+    <span>Powered by Groq + Llama 3.3 (free)</span>
   </footer>
+
 </div>
 
 <script>
@@ -336,32 +579,46 @@ Going forward, I believe it's vital that we align our cross-functional teams to 
 
 Please don't hesitate to reach out if you have any questions or would like to discuss this further. Looking forward to connecting!`,
 
-  essay: `In today's rapidly evolving technological landscape, artificial intelligence stands as a testament to human ingenuity and innovation, marking a pivotal moment in the history of civilization. AI is not merely a tool; it serves as a catalyst for transformation, fundamentally reshaping how we live, work, and interact with the world around us. From healthcare to finance, from education to entertainment, the profound implications of this groundbreaking technology underscore its vital role in shaping our collective future.
+  essay: `In today's rapidly evolving technological landscape, artificial intelligence stands as a testament to human ingenuity and innovation, marking a pivotal moment in the history of civilization. AI is not merely a tool; it serves as a catalyst for transformation, fundamentally reshaping how we live, work, and interact with the world around us.
 
 Industry experts have noted that adoption has accelerated significantly, reflecting broader trends in digital transformation. It is important to note that while challenges remain, the future looks bright as we continue this journey toward excellence and innovation.`,
 
   bio: `Hi there! I'm a passionate and results-driven professional with a proven track record of delivering impactful solutions in today's dynamic business environment. I thrive on leveraging cutting-edge technologies to drive meaningful change and foster collaborative relationships that yield transformative outcomes.
 
-With over a decade of experience in the rapidly evolving tech sector, I have cultivated a deep expertise in end-to-end project management, cross-functional team leadership, and data-driven decision-making. My commitment to excellence and innovation has enabled me to consistently deliver high-quality results that exceed expectations and contribute to organizational success.`,
+With over a decade of experience in the rapidly evolving tech sector, I have cultivated a deep expertise in end-to-end project management, cross-functional team leadership, and data-driven decision-making.`,
 
   review: `This product truly stands as a testament to exceptional craftsmanship and innovative design. It has fundamentally transformed my daily routine, enhancing my overall quality of life in ways I never thought possible. The groundbreaking features showcase the manufacturer's deep commitment to customer satisfaction and continuous improvement.
 
-I was initially skeptical, but after thorough use, I can confidently say this product represents a pivotal shift in its category. Industry observers have noted its superiority, and the vibrant community of users reflects its enduring appeal. Highly recommend to anyone looking to elevate their experience!`
+I was initially skeptical, but after thorough use, I can confidently say this product represents a pivotal shift in its category. Highly recommend to anyone looking to elevate their experience!`
 };
 
 function loadSample(key) {
-  document.getElementById('inputText').value = SAMPLES[key];
+  const ta = document.getElementById('inputText');
+  ta.value = SAMPLES[key];
+  updateWordCount();
+}
+
+function countWords(str) {
+  return str.trim() ? str.trim().split(/\s+/).length : 0;
+}
+
+function updateWordCount() {
+  const val = document.getElementById('inputText').value;
+  document.getElementById('wordCount').textContent = countWords(val) + ' words';
 }
 
 function clearAll() {
   document.getElementById('inputText').value = '';
   const ob = document.getElementById('outputBox');
-  ob.innerHTML = '<span class="placeholder-text">Your humanized text will appear here…</span>';
+  ob.innerHTML = '<span class="placeholder-text">Your humanized text will appear here, streaming in real time…</span>';
   ob.classList.remove('streaming');
   document.getElementById('changesSection').classList.remove('visible');
   document.getElementById('changesBody').innerHTML = '';
   document.getElementById('copyBtn').style.display = 'none';
   document.getElementById('statusMsg').textContent = '';
+  document.getElementById('wordCount').textContent = '0 words';
+  document.getElementById('outputWordCount').textContent = '';
+  document.getElementById('outputDot').classList.remove('pulse');
   outputText = '';
 }
 
@@ -370,8 +627,8 @@ let outputText = '';
 function copyOutput() {
   navigator.clipboard.writeText(outputText).then(() => {
     const btn = document.getElementById('copyBtn');
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy result', 1800);
+    btn.textContent = '✓ Copied!';
+    setTimeout(() => btn.innerHTML = '⎘ Copy result', 1800);
   });
 }
 
@@ -385,21 +642,26 @@ function toggleChanges() {
 async function humanize() {
   const input = document.getElementById('inputText').value.trim();
   if (!input) {
-    document.getElementById('statusMsg').textContent = 'Paste some text first.';
+    const s = document.getElementById('statusMsg');
+    s.textContent = 'Paste some text first.';
+    s.className = 'status-msg';
     return;
   }
 
   const btn = document.getElementById('humanizeBtn');
   const ob = document.getElementById('outputBox');
   const statusMsg = document.getElementById('statusMsg');
+  const dot = document.getElementById('outputDot');
 
   btn.disabled = true;
   statusMsg.textContent = 'Working…';
   statusMsg.className = 'status-msg';
   ob.classList.add('streaming');
   ob.innerHTML = '<span class="cursor"></span>';
+  dot.classList.add('pulse');
   document.getElementById('changesSection').classList.remove('visible');
   document.getElementById('copyBtn').style.display = 'none';
+  document.getElementById('outputWordCount').textContent = '';
   outputText = '';
 
   try {
@@ -422,11 +684,9 @@ async function humanize() {
     while (true) {
       const { done, value } = await reader.read();
       if (done) break;
-
       buffer += decoder.decode(value, { stream: true });
       const lines = buffer.split('\n');
       buffer = lines.pop();
-
       for (const line of lines) {
         if (!line.startsWith('data: ')) continue;
         const data = line.slice(6).trim();
@@ -449,8 +709,10 @@ async function humanize() {
 
     ob.classList.remove('streaming');
     ob.textContent = outputText;
+    dot.classList.remove('pulse');
     statusMsg.textContent = '';
-    document.getElementById('copyBtn').style.display = 'block';
+    document.getElementById('copyBtn').style.display = 'flex';
+    document.getElementById('outputWordCount').textContent = countWords(outputText) + ' words';
 
     if (changesText) {
       const changesBody = document.getElementById('changesBody');
@@ -463,8 +725,9 @@ async function humanize() {
 
   } catch (err) {
     ob.classList.remove('streaming');
-    ob.textContent = '';
-    statusMsg.textContent = 'Error: ' + err.message;
+    ob.innerHTML = '<span class="placeholder-text">Something went wrong. Try again.</span>';
+    dot.classList.remove('pulse');
+    statusMsg.textContent = err.message;
     statusMsg.className = 'status-msg error';
     console.error(err);
   } finally {
@@ -485,6 +748,9 @@ function renderStream(ob, fullContent) {
   cursor.className = 'cursor';
   ob.appendChild(cursor);
 }
+
+// Init word count
+updateWordCount();
 </script>
 </body>
 </html>
